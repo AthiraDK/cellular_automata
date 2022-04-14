@@ -5,14 +5,14 @@ import pygame
 
 class Conways_GameGrid:
 
-    def __init__(self, n_rows=20, n_cols=20, width=15, height=15, margin=2):
+    def __init__(self, n_rows=20, n_cols=20, width=15, height=15, margin=2, neighbourhood='moore'):
         self.width = width
         self.height = height
         self.margin = margin
 
         self.n_rows = n_rows
         self.n_cols = n_cols
-
+        self.neighbourhood = neighbourhood
         self.buttons = {}
         self.button_height = 40
         self.button_width = 100
@@ -73,10 +73,22 @@ class Conways_GameGrid:
             update_state = np.zeros_like(self.data_array)
             for row in range(1, self.data_array.shape[0]-1):
                 for col in range(1, self.data_array.shape[1]-1):
-                    neighbours = self.data_array[row-1, col-1] + self.data_array[row-1, col] + self.data_array[row-1, col+1] + \
-                        self.data_array[row, col-1] + self.data_array[row, col+1] + \
-                        self.data_array[row+1, col-1] + self.data_array[row +
-                                                                        1, col] + self.data_array[row+1, col+1]
+
+                    if self.neighbourhood == 'neumann1':
+                        neighbours = self.curr_state[row-1, col] + self.curr_state[row, col-1] + \
+                            self.curr_state[row, col+1] + self.curr_state[row + 1, col] 
+                    elif self.neighbourhood == 'neumann2':
+                        neighbours = self.curr_state[row-1, col] + self.curr_state[row-2, col] + \
+                            self.curr_state[row, col-1] + self.curr_state[row, col-2] + \
+                            self.curr_state[row, col+1] + self.curr_state[row, col+2] + \
+                            self.curr_state[row + 1, col] + self.curr_state[row+2, col] + \
+                            self.curr_state[row-1, col-1] + self.curr_state[row-1, col+1] +\
+                            self.curr_state[row+1, col-1] + self.curr_state[row+1, col+1]
+                    else:
+                        neighbours = self.data_array[row-1, col-1] + self.data_array[row-1, col] + self.data_array[row-1, col+1] + \
+                            self.data_array[row, col-1] + self.data_array[row, col+1] + \
+                            self.data_array[row+1, col-1] + self.data_array[row +
+                                                                            1, col] + self.data_array[row+1, col+1]
                     if neighbours == 2:
                         update_state[row, col] = self.data_array[row, col]
                     elif neighbours == 3:

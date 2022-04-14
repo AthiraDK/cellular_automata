@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 class ConwaysGOL:
 
-    def __init__(self, seed ='random_seeds', nx_cells=200, ny_cells=200, name='Conways Game of Life'):
+    def __init__(self, seed ='random_seeds', nx_cells=200, ny_cells=200, neighbourhood = 'moore', name='Conways Game of Life'):
         self.name = name
         self.seed = seed
         self.N1 = nx_cells
@@ -14,7 +14,7 @@ class ConwaysGOL:
         self.padding_y = 20
         self.N1_inf = self.N1 + 2*self.padding_x
         self.N2_inf = self.N2 + 2*self.padding_y
-
+        self.neighbourhood = neighbourhood
         self.curr_state = np.zeros((self.N1_inf, self.N2_inf))
         self.history = []
         self.initialize(self.seed)
@@ -62,12 +62,25 @@ class ConwaysGOL:
                 prev_state = self.curr_state.copy()
                 self.history.append(prev_state)
             update_state = np.zeros_like(self.curr_state)
-            for row in range(1, self.curr_state.shape[0]-1):
-                for col in range(1, self.curr_state.shape[1]-1):
-                    neighbours = self.curr_state[row-1, col-1] + self.curr_state[row-1, col] + self.curr_state[row-1, col+1] + \
+            for row in range(2, self.curr_state.shape[0]-2):
+                for col in range(2, self.curr_state.shape[1]-2):
+                    
+                    if self.neighbourhood == 'neumann1':
+                        neighbours = self.curr_state[row-1, col] + self.curr_state[row, col-1] + \
+                            self.curr_state[row, col+1] + self.curr_state[row + 1, col] 
+                    elif self.neighbourhood == 'neumann2':
+                        neighbours = self.curr_state[row-1, col] + self.curr_state[row-2, col] + \
+                            self.curr_state[row, col-1] + self.curr_state[row, col-2] + \
+                            self.curr_state[row, col+1] + self.curr_state[row, col+2] + \
+                            self.curr_state[row + 1, col] + self.curr_state[row+2, col] + \
+                            self.curr_state[row-1, col-1] + self.curr_state[row-1, col+1] +\
+                            self.curr_state[row+1, col-1] + self.curr_state[row+1, col+1]
+                    else:
+                        neighbours = self.curr_state[row-1, col-1] + self.curr_state[row-1, col] + self.curr_state[row-1, col+1] + \
                         self.curr_state[row, col-1] + self.curr_state[row, col+1] + \
                         self.curr_state[row+1, col-1] + self.curr_state[row +
-                                                                        1, col] + self.curr_state[row+1, col+1]
+                                                                        1, col] + self.curr_state[row+1, col+1] 
+
                     if neighbours == 2:
                         update_state[row, col] = self.curr_state[row, col]
                     elif neighbours == 3:
@@ -85,7 +98,12 @@ class ConwaysGOL:
             self.update()
         return self
 
-    def plot(self, n_steps=100, cmap='RdGy_r'):
+    def plot(self, n_steps=100, cmap='RdGy_r', color_scheme='binary', save=False):
+
+        # To Do:
+        # 1. Color according to history
+        # 2. Optionally save animations
+
         
         xlim_0 = self.padding_x
         xlim_1 = xlim_0 + self.N1 + self.padding_x
@@ -110,6 +128,6 @@ class ConwaysGOL:
 
 if __name__ == "__main__":
 
-    test = ConwaysGOL(seed='box')
+    test = ConwaysGOL(seed='line', neighbourhood='moore')
     # test.plot_animate()
     test.plot()
