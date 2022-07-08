@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+import argparse
 class ConwaysGOL:
 
     def __init__(self, seed ='random_seeds', nx_cells=200, ny_cells=200, neighbourhood = 'moore', name='Conways Game of Life'):
@@ -128,6 +129,13 @@ class ConwaysGOL:
 
 if __name__ == "__main__":
 
-    test = ConwaysGOL(seed='line', neighbourhood='moore')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seed", required=False, help='type of seed, options: line, 2 lines, random_seeds, cross and box', type=str, default='line')
+    parser.add_argument("--nx_cells", required=False, help="number of rows on the grid", type=int, default=200)
+    parser.add_argument("--ny_cells", required=False, help="number of columns on the grid", type=int, default=200)
+    parser.add_argument("--neighbourhood", required=False, help='neighbourhood: moore or neumann', type=str, default='moore')
+    
+    args = parser.parse_args()
+    test = ConwaysGOL(args.seed, args.nx_cells, args.ny_cells, args.neighbourhood)
     # test.plot_animate()
     test.plot()
