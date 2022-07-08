@@ -2,6 +2,7 @@ from tkinter import N
 import numpy as np
 import pygame
 
+import argparse
 
 class Conways_GameGrid:
 
@@ -186,4 +187,13 @@ class Conways_GameGrid:
 
 if __name__ == "__main__":
 
-    test = Conways_GameGrid(n_cols=50, n_rows=100)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--n_rows", required=False, help="number of rows on the grid", type=int, default=50)
+    parser.add_argument("--n_cols", required=False, help="number of columns on the grid", type=int, default=100)
+    parser.add_argument("--width", required=False, help="width of each cell in the grid", type=int, default=15)
+    parser.add_argument("--height", required=False, help="height of each cell in the grid", type=int, default=15)
+    parser.add_argument("--margin", required=False, help="margin between cells on the grid", type=int, default=5)
+    parser.add_argument("--neighbourhood", required=False, help="type of CA neighbourhood", type=str, default='moore')
+
+    args = parser.parse_args()
+    Conways_GameGrid(args.n_rows, args.n_cols, args.width, args.height, args.margin, args.neighbourhood)
