@@ -3,10 +3,10 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-
+import argparse
 class CA_Generator:
 
-    def __init__(self, dim = 1, rule ='rule_30', n_cells = 1000, neighbourhood = 'moore'):
+    def __init__(self, rule ='rule_30', n_cells = 1000, neighbourhood = 'moore', dim = 1):
 
         
         self.dim = dim
@@ -97,7 +97,18 @@ class CA_Generator:
 
 if __name__ == "__main__":
 
-    test = CA_Generator(rule='rule_137')
-    # test.plot_animate()
-    test.plot_static()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--rule", required=False, help="Rule for the automata", type=str, default='rule_137')
+    parser.add_argument("--n_cells", required=False, help="Number of cells", type=int, default=1000)
+
+    parser.add_argument("--animate", required=False, help="animate (if false, plot the static final state)", 
+                                type=lambda s:s.lower() in ["true", "t", "yes", "1", "y"], default='no')
+
+    args = parser.parse_args()
+    test = CA_Generator(args.rule, args.n_cells)
+
+    if args.animate:
+        test.plot_animate()
+    else:
+        test.plot_static()
     
